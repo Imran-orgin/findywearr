@@ -123,6 +123,6 @@ if (session_status() == PHP_SESSION_NONE){
     </nav>
 
     <!-- Space for fixed navbar -->
-     div style="margin-top: 70px;"></div>
+     <div style="margin-top: 50px;"></div>
 </body>
 </html>
