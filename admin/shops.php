@@ -23,12 +23,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_shop'])) {
     }
 }
 
+
 // Delete shop
 if (isset($_GET['delete'])) {
     $del_id = intval($_GET['delete']);
-    $del    = mysqli_prepare($conn, "DELETE FROM shops WHERE id = ?");
+
+    // முதல்ல related data எல்லாம் delete பண்ணு
+    // Cart items
+    mysqli_query($conn, "DELETE FROM cart WHERE product_id IN (SELECT id FROM products WHERE shop_id = $del_id)");
+    
+    // Order items
+    mysqli_query($conn, "DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE shop_id = $del_id)");
+    
+    // Order tracking
+    mysqli_query($conn, "DELETE FROM order_tracking WHERE order_id IN (SELECT id FROM orders WHERE shop_id = $del_id)");
+    
+    // Returns
+    mysqli_query($conn, "DELETE FROM returns WHERE order_id IN (SELECT id FROM orders WHERE shop_id = $del_id)");
+    
+    // Commissions
+    mysqli_query($conn, "DELETE FROM commissions WHERE shop_id = $del_id");
+    
+    // Payments
+    mysqli_query($conn, "DELETE FROM payments WHERE order_id IN (SELECT id FROM orders WHERE shop_id = $del_id)");
+    
+    // Notifications - shop owner
+    mysqli_query($conn, "DELETE FROM notifications WHERE user_id = (SELECT owner_id FROM shops WHERE id = $del_id)");
+    
+    // Orders
+    mysqli_query($conn, "DELETE FROM orders WHERE shop_id = $del_id");
+    
+    // Products
+    mysqli_query($conn, "DELETE FROM products WHERE shop_id = $del_id");
+    
+    // Finally shop delete
+    $del = mysqli_prepare($conn, "DELETE FROM shops WHERE id = ?");
     mysqli_stmt_bind_param($del, "i", $del_id);
     mysqli_stmt_execute($del);
+    
     header('Location: /findywearce/admin/shops.php?deleted=1');
     exit();
 }
@@ -125,7 +157,7 @@ $shops = mysqli_query($conn, "
                                 <?php echo htmlspecialchars($shop['shop_name']); ?>
                             </h6>
                             <span class="badge bg-<?php echo $shop['status'] === 'active' ? 'success' : ($shop['status'] === 'pending' ? 'warning' : 'danger'); ?>">
-                                <?php echo ucfirst($shop['status']); ?>
+                                <?php echo ucfirst($shop['status'] ?? 'active'); ?>
                             </span>
                         </div>
                     </div>

@@ -36,6 +36,10 @@ $total_revenue = mysqli_fetch_assoc($revenue_stmt)['t'] ?? 0;
 $products_stmt = mysqli_query($conn, "SELECT COUNT(*) as t FROM products");
 $total_products = mysqli_fetch_assoc($products_stmt)['t'];
 
+// Commission rate
+$comm_result = mysqli_query($conn, "SELECT percentage FROM commission_settings WHERE id = 1");
+$comm_rate   = mysqli_fetch_assoc($comm_result)['percentage'] ?? 10;
+
 // Total returns
 $returns_stmt = mysqli_query($conn, "SELECT COUNT(*) as t FROM returns WHERE status = 'pending'");
 $pending_returns = mysqli_fetch_assoc($returns_stmt)['t'];
@@ -166,6 +170,14 @@ $recent_shops = mysqli_query($conn, "
                 <small class="text-muted"><?php echo $total_orders; ?> orders</small>
             </a>
         </div>
+        <div class="col-md-3 col-6">
+    <a href="/findywearce/admin/commission.php"
+        class="fw-card text-center d-block text-decoration-none">
+        <i class="fas fa-percent fa-2x mb-2" style="color:var(--primary);"></i>
+        <p class="fw-bold mb-0">Commission</p>
+        <small class="text-muted">LKR <?php echo number_format($total_revenue * ($comm_rate/100), 0); ?></small>
+    </a>
+</div>
         <div class="col-md-3 col-6">
             <a href="/findywearce/admin/returns.php"
                 class="fw-card text-center d-block text-decoration-none">
