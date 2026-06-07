@@ -185,4 +185,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 
 </div>
 
+<!-- Shop Reviews -->
+<?php
+$reviews = mysqli_prepare($conn, "
+    SELECT r.*, u.name as customer_name
+    FROM reviews r
+    JOIN users u ON r.customer_id = u.id
+    WHERE r.shop_id = ?
+    ORDER BY r.created_at DESC
+    LIMIT 5
+");
+mysqli_stmt_bind_param($reviews, "i", $shop_id);
+mysqli_stmt_execute($reviews);
+$shop_reviews = mysqli_stmt_get_result($reviews);
+$avg = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(rating) as avg FROM reviews WHERE shop_id = $shop_id"))['avg'];
+?>
+
+<?php if (mysqli_num_rows($shop_reviews) > 0): ?>
+<div class="container pb-4">
+    <div class="fw-card">
+        <h5 class="fw-bold mb-2">
+            <i class="fas fa-star me-2" style="color:#f39c12;"></i>
+            Reviews
+            <small class="text-muted fs-6">
+                (<?php echo number_format($avg, 1); ?>/5)
+            </small>
+        </h5>
+        <?php while ($rev = mysqli_fetch_assoc($shop_reviews)): ?>
+        <div class="border-bottom pb-3 mb-3">
+            <div class="d-flex justify-content-between">
+                <strong class="small">
+                    <?php echo htmlspecialchars($rev['customer_name']); ?>
+                </strong>
+                <small class="text-muted">
+                    <?php echo date('d M Y', strtotime($rev['created_at'])); ?>
+                </small>
+            </div>
+            <div>
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                <i class="fas fa-star"
+                    style="color:<?php echo $i <= $rev['rating'] ? '#f39c12' : '#ddd'; ?>;font-size:0.8rem;"></i>
+                <?php endfor; ?>
+            </div>
+            <?php if ($rev['comment']): ?>
+            <p class="text-muted small mb-0 mt-1">
+                "<?php echo htmlspecialchars($rev['comment']); ?>"
+            </p>
+            <?php endif; ?>
+        </div>
+        <?php endwhile; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php include '../includes/footer.php'; ?>

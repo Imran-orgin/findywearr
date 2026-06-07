@@ -125,11 +125,15 @@ $orders = mysqli_stmt_get_result($stmt);
                         <i class="fas fa-map-marker-alt me-1"></i>Track
                     </a>
                     <?php if ($order['order_status'] === 'delivered'): ?>
-                    <a href="/findywearce/customer/return.php?id=<?php echo $order['id']; ?>"
-                        class="btn btn-sm btn-outline-danger d-block">
-                        <i class="fas fa-undo me-1"></i>Return
-                    </a>
-                    <?php endif; ?>
+<a href="/findywearce/customer/reviews.php"
+    class="btn btn-sm btn-warning d-block mb-1 fw-bold">
+    <i class="fas fa-star me-1"></i>Review
+</a>
+<a href="/findywearce/customer/return.php?id=<?php echo $order['id']; ?>"
+    class="btn btn-sm btn-outline-danger d-block">
+    <i class="fas fa-undo me-1"></i>Return
+</a>
+<?php endif; ?>
                 </div>
 
             </div>

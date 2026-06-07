@@ -51,6 +51,11 @@ if (session_status() == PHP_SESSION_NONE){
                                 <i class="fas fa-box me-1"></i>Orders
                             </a>
                         </li>
+                        <li class="nav-item">
+    <a class="nav-link" href="/findywearce/customer/reviews.php">
+        <i class="fas fa-star me-1"></i>Reviews
+    </a>
+</li>
                         <?php endif; ?>
 
                     <?php if ($_SESSION['role'] === 'shop_owner'): ?>

@@ -279,4 +279,63 @@ $pending_returns = mysqli_fetch_assoc(mysqli_stmt_get_result($returns_stmt))['to
 
 </div>
 
+<!-- Shop Reviews -->
+<?php
+$reviews_stmt = mysqli_query($conn, "
+    SELECT r.*, u.name as customer_name
+    FROM reviews r
+    JOIN users u ON r.customer_id = u.id
+    WHERE r.shop_id = $shop_id
+    ORDER BY r.created_at DESC
+    LIMIT 5
+");
+$avg_rating = mysqli_fetch_assoc(mysqli_query($conn,
+    "SELECT AVG(rating) as avg FROM reviews WHERE shop_id = $shop_id"))['avg'];
+?>
+
+<?php if (mysqli_num_rows($reviews_stmt) > 0): ?>
+<div class="fw-card mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">
+            <i class="fas fa-star me-2" style="color:#f39c12;"></i>
+            Customer Reviews
+            <small class="text-muted fs-6">
+                (<?php echo number_format($avg_rating, 1); ?>/5)
+            </small>
+        </h5>
+    </div>
+    <?php while ($rev = mysqli_fetch_assoc($reviews_stmt)): ?>
+    <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+            style="width:40px;height:40px;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            color:white;font-weight:bold;flex-shrink:0;">
+            <?php echo strtoupper(substr($rev['customer_name'], 0, 1)); ?>
+        </div>
+        <div class="flex-grow-1">
+            <div class="d-flex justify-content-between">
+                <strong class="small">
+                    <?php echo htmlspecialchars($rev['customer_name']); ?>
+                </strong>
+                <small class="text-muted">
+                    <?php echo date('d M Y', strtotime($rev['created_at'])); ?>
+                </small>
+            </div>
+            <div class="mb-1">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                <i class="fas fa-star"
+                    style="color:<?php echo $i <= $rev['rating'] ? '#f39c12' : '#ddd'; ?>;
+                    font-size:0.8rem;"></i>
+                <?php endfor; ?>
+            </div>
+            <?php if ($rev['comment']): ?>
+            <p class="text-muted small mb-0">
+                "<?php echo htmlspecialchars($rev['comment']); ?>"
+            </p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endwhile; ?>
+</div>
+<?php endif; ?>
 <?php include '../includes/footer.php'; ?>
