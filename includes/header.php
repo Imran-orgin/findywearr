@@ -79,13 +79,33 @@ if (session_status() == PHP_SESSION_NONE){
                             </li>
                         <?php endif; ?>
 
-                        <!-- Notification Bell -->
-                         <li class="nav-item me-2">
-                            <a class="nav-link position-relative" href="#">
-                                <i class="fas fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifCount" style="display:none;">0</span>
-                            </a>
-                         </li>
+                       <!-- Notification Bell -->
+        <li class="nav-item me-2 dropdown">
+            <a class="nav-link position-relative" href="#"
+        data-bs-toggle="dropdown" id="notifBell"
+        onclick="markAllRead()">
+        <i class="fas fa-bell"></i>
+        <span class="position-absolute top-0 start-100 translate-middle
+            badge rounded-pill bg-danger"
+            id="notifCount" style="display:none;">0</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end"
+        style="width:320px;max-height:400px;overflow-y:auto;"
+        id="notifDropdown">
+        <li class="px-3 py-2 border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>Notifications</strong>
+                <small class="text-muted" id="notifUnread"></small>
+            </div>
+        </li>
+        <div id="notifList">
+            <li class="px-3 py-3 text-center text-muted">
+                <i class="fas fa-bell-slash mb-2 d-block"></i>
+                No notifications
+            </li>
+        </div>
+    </ul>
+</li>
 
                          <!-- User Dropdown -->
                           <li class="nav-item dropdown">
