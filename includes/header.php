@@ -19,6 +19,14 @@ if (session_status() == PHP_SESSION_NONE){
     <link href="/findywearce/public/css/style.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Page Loader -->
+<div id="pageLoader">
+    <div class="loader-content">
+        <div class="spinner"></div>
+        <p style="color:var(--primary);font-weight:600;">FindyWear</p>
+    </div>
+</div>
+
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
         <div class="container">
             <!-- Logo -->
